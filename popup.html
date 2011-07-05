@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+        
+            function timer(){
+                document.getElementById("image").src="http://www.audienciazero.org/xda/tv/webcam.jpg?fuckyoucache="+Math.floor(Math.random()*99999);
+                var t=setTimeout("timer()",3000);
+            }
+        </script>
+    </head>
+    <body onLoad='timer();'>
+        <style>
+            body { min-width:357px; overflow-x:hidden; font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", Verdana, sans-serif; line-height:11pt;}
+            a:visited,a:link{ color: #FFF;}
+            span.fixedlink{ background-color: #FCFFA8; border: 1px solid #FCFFA8; border-radius: 3px; padding: 5px 10px; cursor:pointer;}
+            span.link{padding:4px;border: 1px solid #DDD; cursor: pointer;padding: 5px 10px;}
+            span.link:hover{  background-color: #FCFFA8; border: 1px solid #FCFFA8; border-radius: 3px; padding: 5px 10px;}
+            #image-container a:link{text-decoration: none;}
+            #image-container{
+                text-align: center; background-color: #2C669E; width:320px; 
+                margin: 0 auto; padding:20px; border: 1px solid #FFF; border-radius: 7px;
+            }
+            #image-container span{
+                font: 200% "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", Verdana, sans-serif;
+                color: #FFF; text-shadow: #333 0px 1px 0px;
+            }
+            #rss-container{display:none; width:320px;margin: 0 auto; background-color: #DDD; padding-bottom: 2px;}
+            #rss-container a{ color:#333;}
+            #rss-container a:visited{ text-decoration: underline; }
+            img{ border: 5px solid #91C27B; margin-bottom:15px;border-radius: 10px;}
+        </style>
+
+        <div id="image-container">
+            <img id="image" src="" alt="xDA Webcam" width="320" height="240">
+            <span><a id="neilink" href="http://xdatelier.org/">xDA atelier</a></span>
+        </div>
+        <div id="rss-container">
+            <p><span class="fixedlink" id="newslink">&larr;</span></p>
+        </div>
+
+        <script>
+            function showUrl(anchor) { var urlLocation = '' + anchor.href; chrome.tabs.create({url:urlLocation}); }
+            var req = new XMLHttpRequest();
+            req.open("GET","http://xdatelier.org/feed/", true);
+            req.onload = showPhoto;
+            req.send(null);
+            function showPhoto() {
+
+                if(req.readyState==4)
+                {
+                    var items = req.responseXML.getElementsByTagName("item");
+                    for (var i = 0, item; item = items[i]; i++) {
+                        var title="none!",link="none!";
+                        for (var j=0; j < item.childNodes.length-1; j++){
+                            if(item.childNodes[j].nodeName.toLowerCase()=="title" )
+                            {   
+                                if(item.childNodes[j].firstChild.nodeValue.length>35)
+                                    title=item.childNodes[j].firstChild.nodeValue.substring(0,35)+"...";
+                                else title=item.childNodes[j].firstChild.nodeValue;
+                            }
+                            if(item.childNodes[j].nodeName.toLowerCase()=="link" ) link=item.childNodes[j].firstChild.nodeValue;
+                        };
+                        var p = document.createElement("p");
+                        var anchor = document.createElement("a");
+                        var span = document.createElement("span");
+                        span.setAttribute('class', 'link');
+                        span.innerText = title;
+                        anchor.setAttribute('href',link);
+                        anchor.setAttribute('onClick', 'showUrl(this)');
+                        anchor.appendChild(span);
+                        p.appendChild(anchor);
+                        document.getElementById("rss-container").appendChild(p);
+                    };
+                }
+                else
+                {
+                    var p = document.createElement("p");
+                    p.innerHTML = "<h2>Error retrieving news feed</h2>";
+                    document.getElementById("rss-container").appendChild(p);
+                }
+            }
+            
+            $(document).ready(function() {
+                $("#neilink").click(function(event) {
+                    event.preventDefault();
+                    $("#image-container").hide()
+                    $("#rss-container").show();
+                })
+                $("#newslink").click(function(event) {
+                    event.preventDefault();
+                    $("#rss-container").hide()
+                    $("#image-container").show();
+                })
+            });
+        </script>
+        
+    </body>
+</html>
