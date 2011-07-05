@@ -1,0 +1,7 @@
+h1. xDA-tv
+
+p. Webcam live stream  of xDA-Lab in chrome extension format.
+
+h2. Features
+
+p. Click xDA to view RSS Feeds from "xDA Atelier website":http://xdatelier.org/
