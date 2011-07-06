@@ -2,15 +2,16 @@
     <head>
         <script type="text/javascript" src="jquery.min.js"></script>
         <script type="text/javascript" charset="utf-8">
+            var url='http://www.audienciazero.org/xda/tv/webcam.jpg';
             function timer(){
                 var image=document.getElementById("image");
                 if(image)
-                    image.src="http://nei.dei.uc.pt/webcam/default.jpg?fuckyoucache="+Math.floor(Math.random()*99999);
+                    image.src="http://www.audienciazero.org/xda/tv/webcam.jpg?fuckyoucache="+Math.floor(Math.random()*99999);
                 var t=setTimeout("timer()",30*1000);
             }
         </script>
     </head>
-    <body onLoad='timer();'>
+    <body onLoad=''>
         <style>
             body { min-width:357px; overflow-x:hidden; font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", Verdana, sans-serif; line-height:11pt;}
             a:visited,a:link{ color: #FFF;}
@@ -111,8 +112,10 @@
                     })
                     
                     // *finally*, set the src attribute of the new image to our image
-                    .attr('src', 'http://nei.dei.uc.pt/webcam/default.jpg');
+                    .attr('src', 'http://www.audienciazero.org/xda/tv/webcam.jpg');
                 });
+                
+                timer();
                 
                 $("#xdalink").click(function(event) {
                     event.preventDefault();
