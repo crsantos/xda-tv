@@ -2,10 +2,11 @@
     <head>
         <script type="text/javascript" src="jquery.min.js"></script>
         <script type="text/javascript" charset="utf-8">
-        
             function timer(){
-                document.getElementById("image").src="http://www.audienciazero.org/xda/tv/webcam.jpg?fuckyoucache="+Math.floor(Math.random()*99999);
-                var t=setTimeout("timer()",3000);
+                var image=document.getElementById("image");
+                if(image)
+                    image.src="http://nei.dei.uc.pt/webcam/default.jpg?fuckyoucache="+Math.floor(Math.random()*99999);
+                var t=setTimeout("timer()",30*1000);
             }
         </script>
     </head>
@@ -13,12 +14,15 @@
         <style>
             body { min-width:357px; overflow-x:hidden; font-family: "Helvetica Neue", "Helvetica", "Lucida Grande", "Arial", Verdana, sans-serif; line-height:11pt;}
             a:visited,a:link{ color: #FFF;}
+            a#xdalink:hover{
+                text-shadow: #959865 0px 1px 0px;
+            }
             span.fixedlink{ background-color: #FCFFA8; border: 1px solid #FCFFA8; border-radius: 3px; padding: 5px 10px; cursor:pointer;}
             span.link{padding:4px;border: 1px solid #DDD; cursor: pointer;padding: 5px 10px;}
             span.link:hover{  background-color: #FCFFA8; border: 1px solid #FCFFA8; border-radius: 3px; padding: 5px 10px;}
             #image-container a:link{text-decoration: none;}
             #image-container{
-                text-align: center; background-color: #2C669E; width:320px; 
+                text-align: center; background-color: #808080; width:320px; min-height:240px;
                 margin: 0 auto; padding:20px; border: 1px solid #FFF; border-radius: 7px;
             }
             #image-container span{
@@ -28,12 +32,15 @@
             #rss-container{display:none; width:320px;margin: 0 auto; background-color: #DDD; padding-bottom: 2px;}
             #rss-container a{ color:#333;}
             #rss-container a:visited{ text-decoration: underline; }
-            img{ border: 5px solid #91C27B; margin-bottom:15px;border-radius: 10px;}
+            img#image{ border: 5px solid #91C27B; margin-bottom:15px;border-radius: 10px;}
+            
+            #image-container.loading {
+              background: url(spinner.gif) no-repeat center center;
+            }
         </style>
-
-        <div id="image-container">
-            <img id="image" src="" alt="xDA Webcam" width="320" height="240">
-            <span><a id="neilink" href="http://xdatelier.org/">xDA atelier</a></span>
+        
+        <div id="image-container" class="loading">
+            <span><a id="xdalink" href="http://xdatelier.org/">xDA atelier</a></span>
         </div>
         <div id="rss-container">
             <p><span class="fixedlink" id="newslink">&larr;</span></p>
@@ -46,7 +53,7 @@
             req.onload = showPhoto;
             req.send(null);
             function showPhoto() {
-
+                
                 if(req.readyState==4)
                 {
                     var items = req.responseXML.getElementsByTagName("item");
@@ -81,8 +88,33 @@
                 }
             }
             
+            
             $(document).ready(function() {
-                $("#neilink").click(function(event) {
+                
+                $(function () {
+                  var img = new Image();
+                  img.id="image";
+                  img.width=320;
+                  img.height=240;
+                  // wrap our new image in jQuery, then:
+                  $(img)// once the image has loaded, execute this code
+                    .load(function () {
+                      $(this).hide();// set the image hidden by default    
+                      $('#image-container')// with the holding div #loader, apply:
+                        .removeClass('loading')// remove the loading class (so no background spinner), 
+                        .prepend(this);// then insert our image
+                      $(this).fadeIn(400);// fade our image in to create a nice effect
+                    })
+                    .error(function () {
+                        // notify the user that the image could not be loaded
+                        $('#image-container').append($('<h2>Error retrieving stream</h2>'));
+                    })
+                    
+                    // *finally*, set the src attribute of the new image to our image
+                    .attr('src', 'http://nei.dei.uc.pt/webcam/default.jpg');
+                });
+                
+                $("#xdalink").click(function(event) {
                     event.preventDefault();
                     $("#image-container").hide()
                     $("#rss-container").show();
