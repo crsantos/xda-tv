@@ -19,6 +19,7 @@
           "matches": ["http://jquery.com/*"],
           "js": ["jquery.min.js"]
       }
-  ]
+  ],
+  "options_page": "options.html"
 }
 
