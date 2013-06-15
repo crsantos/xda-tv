@@ -1,6 +1,7 @@
 {
-  "default_title": "xDA-tv",
-  "version": "2.0",
+  "manifest_version": 2,
+  "name": "xDA-tv",
+  "version": "1.0.1",
   "description": "Check who is on xDA via our WebCam. Try our website http://xdatelier.org/",
 
   "browser_action": {
